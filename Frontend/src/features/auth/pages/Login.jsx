@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
+import { useAuth } from '../hook/useAuth'
+import {useSelector} from 'react-redux'
+import { Navigate } from 'react-router'
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -7,6 +10,15 @@ const Login = () => {
     password: '',
   })
 
+  const navigate = useNavigate()
+
+  const { handleLogin, loading } = useAuth();
+
+  const user = useSelector((state) => state.auth.user);
+
+  if(!loading && user){
+      return <Navigate to="/" replace/>
+  }
   const handleChange = (event) => {
     const { name, value } = event.target
     setFormData((prev) => ({
@@ -15,9 +27,12 @@ const Login = () => {
     }))
   }
 
-  const handleSubmit = (event) => {
+  
+
+  const handleSubmit = async (event) => {
     event.preventDefault()
-    console.log('Login submitted:', formData)
+    await handleLogin(formData)
+    navigate('/')
   }
 
   return (
