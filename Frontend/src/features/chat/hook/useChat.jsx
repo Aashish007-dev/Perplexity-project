@@ -16,19 +16,21 @@ export const useChat = () => {
 
         const {chat, aiMessage} = data
 
-        dispatch(createNewChat({
+      if(!chatId){
+          dispatch(createNewChat({
             chatId: chat._id,
             title: chat.title
         }))
+      }
 
         dispatch(addNewMessage({
-            chatId: chat._id,
+            chatId: chatId || chat._id,
             content: message,
             role: 'user'
         }))
 
         dispatch(addNewMessage({
-            chatId: chat._id,
+            chatId: chatId || chat._id,
             content: aiMessage.content,
             role: aiMessage.role
         }))
@@ -57,7 +59,10 @@ export const useChat = () => {
         dispatch(setLoading(false))
     }
 
-    async function handleOpenChat (chatId) {
+    async function handleOpenChat (chatId, chats) {
+
+        if(chats[chatId].messages.length === 0) {
+
         const data = await getMessages(chatId)
 
         const {messages} = data
@@ -71,6 +76,7 @@ export const useChat = () => {
             chatId,
             messages: formattedMessages
         }))
+    }
 
         dispatch(setCurrentChatId(chatId))
     }
