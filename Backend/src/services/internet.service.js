@@ -7,6 +7,10 @@ const tvly = tavily({
 
 
 
-export const searchInternet = async (query) => {
-    
+export const searchInternet = async ({query}) => {
+    const results =  await tvly.search(query, {
+          maxResults: 5,
+    })
+
+    return JSON.stringify(results)
 }
